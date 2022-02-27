@@ -2,4 +2,4 @@
 *.gradle
 *.bat
 gradle/
-build
+build/*

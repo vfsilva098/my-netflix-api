@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: 'rabbitmq'
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - /home/dev/docker/volumes/rabbitmq:/var/lib/rabbitmq/
+      - /home/dev/docker/volumes/rabbitmq/log:/var/log/rabbitmq
+    networks:
+      - rabbitmq_go_net
+
+  postgres-compose:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: "postgres"
+    ports:
+      - "5432:5432"
+    volumes:
+      - /home/dev/docker/volumes/postgres:/var/lib/postgresql/data
+    networks:
+      - postgres-compose-network
+
+  pgadmin-compose:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "localhost@postgres.com"
+      PGADMIN_DEFAULT_PASSWORD: "pgadmin"
+    ports:
+      - "16543:80"
+    depends_on:
+      - postgres-compose
+    networks:
+      - postgres-compose-network
+
+networks:
+  rabbitmq_go_net:
+    driver: bridge
+  postgres-compose-network:
+    driver: bridge

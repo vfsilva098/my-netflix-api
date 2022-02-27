@@ -1,6 +1,18 @@
 version: '3'
 
 services:
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: 'rabbitmq'
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - /home/dev/docker/volumes/rabbitmq:/var/lib/rabbitmq/
+      - /home/dev/docker/volumes/rabbitmq/log:/var/log/rabbitmq
+    networks:
+      - rabbitmq_go_net
+
   postgres-compose:
     image: postgres
     environment:
@@ -25,5 +37,7 @@ services:
       - postgres-compose-network
 
 networks:
+  rabbitmq_go_net:
+    driver: bridge
   postgres-compose-network:
     driver: bridge
